@@ -1,0 +1,233 @@
+{
+  "id": "stripe_payments",
+  "name": "Stripe Payment Processing",
+  "description": "Handle payments, subscriptions, and customer management through Stripe",
+  "version": "1.0.0",
+  "transport": {
+    "type": "stdio",
+    "command": "node",
+    "args": ["stripe-mcp-server.js"],
+    "env": {
+      "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}",
+      "STRIPE_WEBHOOK_SECRET": "${STRIPE_WEBHOOK_SECRET}"
+    },
+    "timeout": 30
+  },
+  "tools": [
+    {
+      "name": "create_payment_intent",
+      "description": "Create a new payment intent for processing payments",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "Payment amount in cents"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code (e.g., 'usd')",
+            "default": "usd"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Stripe customer ID (optional)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Payment description"
+          }
+        },
+        "required": ["amount", "currency"]
+      },
+      "ui_config": {
+        "category": "payments",
+        "icon": "credit-card",
+        "requires_confirmation": true,
+        "dangerous": false
+      },
+      "examples": [
+        {
+          "description": "Create a $10 payment intent",
+          "parameters": {
+            "amount": 1000,
+            "currency": "usd",
+            "description": "Test payment"
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_customer",
+      "description": "Create a new Stripe customer",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Customer email address"
+          },
+          "name": {
+            "type": "string",
+            "description": "Customer full name"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone number"
+          },
+          "description": {
+            "type": "string",
+            "description": "Customer description"
+          }
+        },
+        "required": ["email"]
+      },
+      "ui_config": {
+        "category": "customers",
+        "icon": "user-plus",
+        "requires_confirmation": false
+      },
+      "examples": [
+        {
+          "description": "Create a test customer",
+          "parameters": {
+            "email": "test@example.com",
+            "name": "Test Customer"
+          }
+        }
+      ]
+    },
+    {
+      "name": "get_customer",
+      "description": "Retrieve customer information by ID",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Stripe customer ID"
+          }
+        },
+        "required": ["customer_id"]
+      },
+      "ui_config": {
+        "category": "customers",
+        "icon": "user",
+        "requires_confirmation": false
+      }
+    },
+    {
+      "name": "list_customers",
+      "description": "List all customers with optional filtering",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Number of customers to retrieve (max 100)",
+            "default": 10
+          },
+          "email": {
+            "type": "string",
+            "description": "Filter by email address"
+          }
+        }
+      },
+      "ui_config": {
+        "category": "customers",
+        "icon": "users",
+        "requires_confirmation": false
+      }
+    },
+    {
+      "name": "create_subscription",
+      "description": "Create a new subscription for a customer",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "Stripe customer ID"
+          },
+          "price_id": {
+            "type": "string",
+            "description": "Stripe price ID"
+          },
+          "trial_period_days": {
+            "type": "integer",
+            "description": "Number of trial days (optional)"
+          }
+        },
+        "required": ["customer_id", "price_id"]
+      },
+      "ui_config": {
+        "category": "subscriptions",
+        "icon": "refresh-cw",
+        "requires_confirmation": true,
+        "dangerous": false
+      }
+    },
+    {
+      "name": "cancel_subscription",
+      "description": "Cancel a subscription",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subscription_id": {
+            "type": "string",
+            "description": "Stripe subscription ID"
+          },
+          "at_period_end": {
+            "type": "boolean",
+            "description": "Cancel at the end of the billing period",
+            "default": true
+          }
+        },
+        "required": ["subscription_id"]
+      },
+      "ui_config": {
+        "category": "subscriptions",
+        "icon": "x-circle",
+        "requires_confirmation": true,
+        "dangerous": true
+      }
+    },
+    {
+      "name": "refund_payment",
+      "description": "Create a refund for a payment",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "payment_intent_id": {
+            "type": "string",
+            "description": "Stripe payment intent ID"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Refund amount in cents (optional, defaults to full refund)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for refund",
+            "enum": ["duplicate", "fraudulent", "requested_by_customer"]
+          }
+        },
+        "required": ["payment_intent_id"]
+      },
+      "ui_config": {
+        "category": "refunds",
+        "icon": "rotate-ccw",
+        "requires_confirmation": true,
+        "dangerous": true
+      }
+    }
+  ],
+  "capabilities": ["tools"],
+  "metadata": {
+    "author": "Your Company",
+    "license": "MIT",
+    "repository": "https://github.com/your-org/stripe-mcp-server",
+    "documentation": "https://docs.stripe.com/api",
+    "tags": ["payments", "stripe", "e-commerce", "subscriptions"]
+  }
+}

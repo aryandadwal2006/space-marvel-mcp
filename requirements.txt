@@ -1,0 +1,10 @@
+streamlit>=1.28.0
+google-generativeai>=0.3.0
+mcp>=0.3.0
+pandas>=1.5.0
+plotly>=5.15.0
+httpx>=0.24.0
+watchdog>=3.0.0
+jsonschema>=4.17.0
+asyncio
+logging

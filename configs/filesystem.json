@@ -1,0 +1,323 @@
+{
+  "id": "filesystem",
+  "name": "File System Operations",
+  "description": "Read, write, list, and manage files and directories on the local system",
+  "version": "1.0.0",
+  "transport": {
+    "type": "stdio",
+    "command": "python",
+    "args": ["-m", "mcp_filesystem_server"],
+    "env": {
+      "FILESYSTEM_ROOT": "${FILESYSTEM_ROOT:-/tmp}",
+      "MAX_FILE_SIZE": "${MAX_FILE_SIZE:-10485760}"
+    },
+    "timeout": 30
+  },
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read the contents of a text file",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to read"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "File encoding",
+            "default": "utf-8"
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "file-text",
+        "requires_confirmation": false
+      },
+      "examples": [
+        {
+          "description": "Read a text file",
+          "parameters": {
+            "path": "/tmp/example.txt"
+          }
+        }
+      ]
+    },
+    {
+      "name": "write_file",
+      "description": "Write content to a text file",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path where to write the file"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to write to the file"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "File encoding",
+            "default": "utf-8"
+          },
+          "append": {
+            "type": "boolean",
+            "description": "Append to existing file instead of overwriting",
+            "default": false
+          }
+        },
+        "required": ["path", "content"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "edit",
+        "requires_confirmation": true,
+        "dangerous": false
+      },
+      "examples": [
+        {
+          "description": "Write text to a file",
+          "parameters": {
+            "path": "/tmp/output.txt",
+            "content": "Hello, World!"
+          }
+        }
+      ]
+    },
+    {
+      "name": "list_directory",
+      "description": "List contents of a directory",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the directory to list"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "List contents recursively",
+            "default": false
+          },
+          "show_hidden": {
+            "type": "boolean",
+            "description": "Include hidden files and directories",
+            "default": false
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "directory_operations",
+        "icon": "folder",
+        "requires_confirmation": false
+      },
+      "examples": [
+        {
+          "description": "List directory contents",
+          "parameters": {
+            "path": "/tmp"
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_directory",
+      "description": "Create a new directory",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of the directory to create"
+          },
+          "parents": {
+            "type": "boolean",
+            "description": "Create parent directories if they don't exist",
+            "default": true
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "directory_operations",
+        "icon": "folder-plus",
+        "requires_confirmation": true,
+        "dangerous": false
+      }
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete a file",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to delete"
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "trash-2",
+        "requires_confirmation": true,
+        "dangerous": true
+      }
+    },
+    {
+      "name": "delete_directory",
+      "description": "Delete a directory and its contents",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the directory to delete"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "Delete directory contents recursively",
+            "default": true
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "directory_operations",
+        "icon": "folder-x",
+        "requires_confirmation": true,
+        "dangerous": true
+      }
+    },
+    {
+      "name": "copy_file",
+      "description": "Copy a file to a new location",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source_path": {
+            "type": "string",
+            "description": "Path to the source file"
+          },
+          "destination_path": {
+            "type": "string",
+            "description": "Path where to copy the file"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "Overwrite destination if it exists",
+            "default": false
+          }
+        },
+        "required": ["source_path", "destination_path"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "copy",
+        "requires_confirmation": true,
+        "dangerous": false
+      }
+    },
+    {
+      "name": "move_file",
+      "description": "Move or rename a file",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source_path": {
+            "type": "string",
+            "description": "Current path of the file"
+          },
+          "destination_path": {
+            "type": "string",
+            "description": "New path for the file"
+          }
+        },
+        "required": ["source_path", "destination_path"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "move",
+        "requires_confirmation": true,
+        "dangerous": false
+      }
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get information about a file or directory",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file or directory"
+          }
+        },
+        "required": ["path"]
+      },
+      "ui_config": {
+        "category": "file_operations",
+        "icon": "info",
+        "requires_confirmation": false
+      }
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files matching a pattern",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string",
+            "description": "Directory to search in"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Filename pattern to match (supports wildcards)"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "Search recursively in subdirectories",
+            "default": true
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Case sensitive pattern matching",
+            "default": false
+          }
+        },
+        "required": ["directory", "pattern"]
+      },
+      "ui_config": {
+        "category": "search",
+        "icon": "search",
+        "requires_confirmation": false
+      },
+      "examples": [
+        {
+          "description": "Search for Python files",
+          "parameters": {
+            "directory": "/tmp",
+            "pattern": "*.py",
+            "recursive": true
+          }
+        }
+      ]
+    }
+  ],
+  "capabilities": ["tools"],
+  "metadata": {
+    "author": "Your Company",
+    "license": "MIT",
+    "repository": "https://github.com/your-org/filesystem-mcp-server",
+    "documentation": "https://github.com/your-org/filesystem-mcp-server/blob/main/README.md",
+    "tags": ["filesystem", "files", "directories", "local"]
+  }
+}
