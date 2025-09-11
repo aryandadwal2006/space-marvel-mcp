@@ -185,7 +185,7 @@ class MCPStreamlitApp:
             
             # API Key input
             new_api_key = st.text_input(
-                "🔑 Gemini API Key",
+                "Gemini API Key",
                 value=st.session_state.gemini_api_key,
                 type="password",
                 placeholder="Enter your Gemini API key...",
@@ -985,4 +985,5 @@ class MCPStreamlitApp:
 # Main entry point
 if __name__ == "__main__":
     app = MCPStreamlitApp()
+
     app.run()
